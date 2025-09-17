@@ -1,0 +1,169 @@
+export const LIST_STUDENTS = [
+  {
+    id: 1,
+    name: "Juan",
+    last_name: "Perez",
+    quota_day: false,
+    approved_subject: ["Matematica", "Fisica"],
+    cuorses: [
+      {
+        id: 12,
+        cuorse_name: "Fisica Cuántica",
+        start_hour: 20,
+        end_hour: 22,
+        professor: "Leon",
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: "María",
+    last_name: "Gómez",
+    quota_day: true,
+    approved_subject: ["Química", "Biología"],
+    cuorses: [
+      {
+        id: 21,
+        cuorse_name: "Bioquímica Avanzada",
+        start_hour: 18,
+        end_hour: 20,
+        professor: "Laura",
+      },
+      {
+        id: 22,
+        cuorse_name: "Genética Molecular",
+        start_hour: 14,
+        end_hour: 16,
+        professor: "Pedro",
+      },
+    ],
+  },
+  {
+    id: 3,
+    name: "Carlos",
+    last_name: "López",
+    quota_day: false,
+    approved_subject: ["Historia", "Lengua"],
+    cuorses: [
+      {
+        id: 31,
+        cuorse_name: "Historia Contemporánea",
+        start_hour: 10,
+        end_hour: 12,
+        professor: "Ana",
+      },
+    ],
+  },
+  {
+    id: 4,
+    name: "Lucía",
+    last_name: "Fernández",
+    quota_day: true,
+    approved_subject: ["Matematica", "Estadística"],
+    cuorses: [
+      {
+        id: 41,
+        cuorse_name: "Probabilidades y Estadística",
+        start_hour: 8,
+        end_hour: 10,
+        professor: "Sergio",
+      },
+      {
+        id: 42,
+        cuorse_name: "Álgebra Lineal",
+        start_hour: 16,
+        end_hour: 18,
+        professor: "Carla",
+      },
+    ],
+  },
+  {
+    id: 5,
+    name: "Diego",
+    last_name: "Ramírez",
+    quota_day: false,
+    approved_subject: ["Programación", "Bases de Datos"],
+    cuorses: [
+      {
+        id: 51,
+        cuorse_name: "Desarrollo Web Avanzado",
+        start_hour: 19,
+        end_hour: 21,
+        professor: "Matías",
+      },
+    ],
+  },
+  {
+    id: 6,
+    name: "Sofía",
+    last_name: "Martínez",
+    quota_day: true,
+    approved_subject: ["Arte", "Diseño Gráfico"],
+    cuorses: [
+      {
+        id: 61,
+        cuorse_name: "Diseño UX/UI",
+        start_hour: 9,
+        end_hour: 11,
+        professor: "Valeria",
+      },
+    ],
+  },
+];
+
+export const LIST_SUBJECTS = [
+  {
+    id: 1,
+    subject: "Biología II",
+    correlative: ["Biología I"],
+  },
+  {
+    id: 2,
+    subject: "Física Cuántica",
+    correlative: ["Física Clásica", "Matemática Avanzada"],
+  },
+  {
+    id: 3,
+    subject: "Programación II",
+    correlative: ["Programación I"],
+  },
+  {
+    id: 4,
+    subject: "Álgebra Lineal",
+    correlative: ["Matemática I"],
+  },
+  {
+    id: 5,
+    subject: "Estadística Aplicada",
+    correlative: ["Probabilidades"],
+  },
+  {
+    id: 6,
+    subject: "Química Orgánica",
+    correlative: ["Química General"],
+  },
+  {
+    id: 7,
+    subject: "Historia Contemporánea",
+    correlative: ["Historia Moderna"],
+  },
+  {
+    id: 8,
+    subject: "Diseño UX/UI",
+    correlative: ["Diseño Gráfico"],
+  },
+  {
+    id: 9,
+    subject: "Genética Molecular",
+    correlative: ["Biología II", "Química Orgánica"],
+  },
+  {
+    id: 10,
+    subject: "Bases de Datos Avanzadas",
+    correlative: ["Bases de Datos I", "Programación II"],
+  },
+];
+
+console.log("Lista de alumnos:", LIST_SUBJECTS);
+console.log("Lista de materias:", LIST_SUBJECTS);
+console.log("Lista de materia correlativas:", LIST_SUBJECTS?.[0]?.correlative);
