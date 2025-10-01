@@ -1,3 +1,5 @@
+import { Course, Student } from "../models/models.js";
+
 export const LIST_STUDENTS = [
   {
     id: 1,
@@ -164,6 +166,17 @@ export const LIST_SUBJECTS = [
   },
 ];
 
-console.log("Lista de alumnos:", LIST_SUBJECTS);
-console.log("Lista de materias:", LIST_SUBJECTS);
-console.log("Lista de materia correlativas:", LIST_SUBJECTS?.[0]?.correlative);
+const new_course = new Course(12, "Física Cuántica", 20, 22, "Leon");
+
+const new_student = new Student(
+  1,
+  "Juan",
+  "Perez",
+  false,
+  ["Matematica", "Fisica"],
+  [new_course]
+);
+
+console.log("NUEVA MATERIA:", new_course)
+
+console.log("NUEVO ESTUDIANTE:", new_student)
