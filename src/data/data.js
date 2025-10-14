@@ -1,4 +1,5 @@
-import { Course, Student } from "../models/models.js";
+import { CourseDTO, StudentDTO } from "../models/models.js";
+
 
 export const LIST_STUDENTS = [
   {
@@ -7,7 +8,7 @@ export const LIST_STUDENTS = [
     last_name: "Perez",
     quota_day: false,
     approved_subject: ["Matematica", "Fisica"],
-    cuorses: [
+    courses: [
       {
         id: 12,
         cuorse_name: "Fisica Cuántica",
@@ -23,17 +24,17 @@ export const LIST_STUDENTS = [
     last_name: "Gómez",
     quota_day: true,
     approved_subject: ["Química", "Biología"],
-    cuorses: [
+    courses: [
       {
         id: 21,
-        cuorse_name: "Bioquímica Avanzada",
+        course_name: "Bioquímica Avanzada",
         start_hour: 18,
         end_hour: 20,
         professor: "Laura",
       },
       {
         id: 22,
-        cuorse_name: "Genética Molecular",
+        course_name: "Genética Molecular",
         start_hour: 14,
         end_hour: 16,
         professor: "Pedro",
@@ -46,10 +47,10 @@ export const LIST_STUDENTS = [
     last_name: "López",
     quota_day: false,
     approved_subject: ["Historia", "Lengua"],
-    cuorses: [
+    courses: [
       {
         id: 31,
-        cuorse_name: "Historia Contemporánea",
+        course_name: "Historia Contemporánea",
         start_hour: 10,
         end_hour: 12,
         professor: "Ana",
@@ -62,17 +63,17 @@ export const LIST_STUDENTS = [
     last_name: "Fernández",
     quota_day: true,
     approved_subject: ["Matematica", "Estadística"],
-    cuorses: [
+    courses: [
       {
         id: 41,
-        cuorse_name: "Probabilidades y Estadística",
+        course_name: "Probabilidades y Estadística",
         start_hour: 8,
         end_hour: 10,
         professor: "Sergio",
       },
       {
         id: 42,
-        cuorse_name: "Álgebra Lineal",
+        course_name: "Álgebra Lineal",
         start_hour: 16,
         end_hour: 18,
         professor: "Carla",
@@ -85,10 +86,10 @@ export const LIST_STUDENTS = [
     last_name: "Ramírez",
     quota_day: false,
     approved_subject: ["Programación", "Bases de Datos"],
-    cuorses: [
+    courses: [
       {
         id: 51,
-        cuorse_name: "Desarrollo Web Avanzado",
+        course_name: "Desarrollo Web Avanzado",
         start_hour: 19,
         end_hour: 21,
         professor: "Matías",
@@ -101,10 +102,10 @@ export const LIST_STUDENTS = [
     last_name: "Martínez",
     quota_day: true,
     approved_subject: ["Arte", "Diseño Gráfico"],
-    cuorses: [
+    courses: [
       {
         id: 61,
-        cuorse_name: "Diseño UX/UI",
+        course_name: "Diseño UX/UI",
         start_hour: 9,
         end_hour: 11,
         professor: "Valeria",
@@ -166,16 +167,9 @@ export const LIST_SUBJECTS = [
   },
 ];
 
-const new_course = new Course(12, "Física Cuántica", 20, 22, "Leon");
+const new_course = new CourseDTO(12, "Leon", "Física Cuántica", 20, 22);
 
-const new_student = new Student(
-  1,
-  "Juan",
-  "Perez",
-  false,
-  ["Matematica", "Fisica"],
-  [new_course]
-);
+const new_student = new StudentDTO( 1,  "Juan",  "Perez",  false,);
 
 console.log("NUEVA MATERIA:", new_course)
 
