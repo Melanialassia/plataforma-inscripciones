@@ -1,7 +1,7 @@
 const express=require('express');
 
 //importamos las rutas del ejemplo
-const inscripcionRoutes=require('./src/routes/inscripcion.routes.js');
+const inscripcionRoutes=require('./routes/inscripcion.routes.js');
 
 //definimos el puerto donde escuchara nuestro servidor 
 const PORT=3000;
