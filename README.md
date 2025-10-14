@@ -24,4 +24,4 @@
 
 - El sistema deberá actualizar automáticamente los cupos disponibles al momento de cada inscripción confirmada.
 
-- Si se alcanza el límite de cupos, el sistema deberá bloquear nuevas inscripciones y ofrecer lista de espera.
+- Si se alcanza el límite de cupos, el sistema deberá bloquear nuevas inscripciones y ofrecer lista de espera.   
