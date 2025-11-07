@@ -18,7 +18,7 @@ const registrarInscripcion = async (req, res) => {
 
     if (existe) {
       return res.status(400).json({
-        message: '⚠️ El alumno ya está inscripto en esta materia.'
+        message: 'El alumno ya está inscripto en esta materia.'
       });
     }
 
@@ -33,7 +33,7 @@ const registrarInscripcion = async (req, res) => {
     if (error) throw error;
 
     res.status(200).json({
-      message: '✅ Inscripción registrada correctamente',
+      message: 'Inscripción registrada correctamente',
       data
     });
   } catch (err) {
@@ -66,7 +66,6 @@ const listarInscripciones = async (req, res) => {
   }
 };
 
-// ✅ Aprobar o cambiar estado
 const aprobarInscripcionController = async (req, res) => {
   const { id_inscripcion, estado } = req.body;
 
@@ -83,7 +82,7 @@ const aprobarInscripcionController = async (req, res) => {
       .eq('id_inscripcion', id_inscripcion);
 
     if (error) throw error;
-    res.json({ message: '✅ Estado de inscripción actualizado con éxito' });
+    res.json({ message: 'Estado de inscripción actualizado con éxito' });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -100,7 +99,7 @@ const eliminarInscripcion = async (req, res) => {
       .eq('id_inscripcion', id_inscripcion);
 
     if (error) throw error;
-    res.json({ message: '✅ Inscripción eliminada correctamente' });
+    res.json({ message: 'Inscripción eliminada correctamente' });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
