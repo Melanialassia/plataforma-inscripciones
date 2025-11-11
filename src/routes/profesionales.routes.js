@@ -3,7 +3,7 @@ const router = express.Router();
 const {
   crearProfesional,
   obtenerProfesionales,
-} = require("../controllers/profesores.controller.js");
+} = require("../controllers/profesionales.controller.js");
 
 router.post("/", crearProfesional);
 router.get("/", obtenerProfesionales);
