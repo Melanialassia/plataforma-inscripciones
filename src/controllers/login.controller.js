@@ -1,4 +1,3 @@
-// src/controllers/login.controller.js
 const supabase = require('../supabaseClient.js');
 
 async function login(req, res) {
@@ -9,7 +8,7 @@ async function login(req, res) {
     }
 
     const { data: usuario, error } = await supabase
-        .from('usuarios') // nombre de tu tabla
+        .from('usuarios') 
         .select('*')
         .eq('dni', Number(dni))
         .single();

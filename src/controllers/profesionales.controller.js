@@ -1,4 +1,3 @@
-
 const supabase = require("../supabaseClient.js");
 
 const crearProfesional = async (req, res) => {
@@ -20,23 +19,19 @@ const crearProfesional = async (req, res) => {
   }
 };
 
-
 const obtenerProfesionales = async (req, res) => {
   try {
-    const { data, error } = await supabase
-      .from("profesores")
-      .select(`
-        id_profesor,
-        dni,
-        nombre,
-        apellido,
-        especialidad
+    const { data, error } = await supabase.from("profesores").select(`
+         id_profesor,
+  dni,
+  nombre,
+  apellido,
+  especialidad
       `);
 
     if (error) throw error;
 
-    res.status(200).json({ message: "Profesor creado con exito",
-      data, });
+    res.status(200).json({ message: "Profesor creado con exito", data });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -2,7 +2,6 @@
 // src/controllers/auth.controller.js
 const supabase = require('../supabaseClient.js');
 
-// ✅ REGISTRO
 const register = async (req, res) => {
   const { email, password, dni, rol } = req.body;
 
@@ -22,7 +21,6 @@ const register = async (req, res) => {
   }
 };
 
-// ✅ LOGIN
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -34,13 +32,26 @@ const login = async (req, res) => {
 
     if (error) throw error;
 
-    res.status(200).json({
+    const token = data.session?.access_token ?? null;
+    const user = data.user ?? null;
+
+    const { data: userInfo, error: userError } = await supabase
+      .from('usuarios')
+      .select('email, dni, rol')
+      .eq('email', email)
+      .single();
+
+
+    return res.status(200).json({
       message: 'Login exitoso',
-      token: data.session.access_token,
-      user: data.user
+      token,
+      user,
+      email: userInfo?.email ?? email,
+      dni: userInfo?.dni ?? null,
+      rol: userInfo?.rol ?? null,
     });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 };
 

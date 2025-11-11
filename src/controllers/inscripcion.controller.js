@@ -1,12 +1,9 @@
-// src/controllers/inscripcion.controller.js
 const supabase = require('../supabaseClient.js');
 
-// ✅ Registrar inscripción (sin duplicados)
 const registrarInscripcion = async (req, res) => {
   const { dni, id_materia, fecha_inscripcion, estado } = req.body;
 
   try {
-    // 1️⃣ Verificar si ya existe una inscripción para ese alumno y materia
     const { data: existe, error: errorExistencia } = await supabase
       .from('inscripciones')
       .select('*')
@@ -22,7 +19,6 @@ const registrarInscripcion = async (req, res) => {
       });
     }
 
-    // 2️⃣ Insertar nueva inscripción si no existe
     const { data, error } = await supabase
       .from('inscripciones')
       .insert([
@@ -41,7 +37,6 @@ const registrarInscripcion = async (req, res) => {
   }
 };
 
-// ✅ Listar inscripciones (con materias relacionadas)
 const listarInscripciones = async (req, res) => {
   try {
     const { data, error } = await supabase
@@ -88,7 +83,6 @@ const aprobarInscripcionController = async (req, res) => {
   }
 };
 
-// ✅ Eliminar inscripción (desuscribirse)
 const eliminarInscripcion = async (req, res) => {
   const { id_inscripcion } = req.params;
 
