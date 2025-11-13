@@ -1,5 +1,5 @@
 // src/services/materias.service.js
-
+const supabase = require("../supabaseClient.js");
 // 🔹 Ejemplo de datos simulados (puedes conectar a BD después)
 const materias = [
   { id: 1, nombre: "Matemática", profesor: "Juan Pérez" },
