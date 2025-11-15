@@ -11,7 +11,7 @@ const register = async (req, res) => {
         error: "El rol debe ser exactamente 'admin'."
       });
     }
-    
+   
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -19,7 +19,8 @@ const register = async (req, res) => {
         data: { dni, rol }
       }
     });
-
+ console.log("SIGNUP ERROR:", error);
+console.log("SIGNUP DATA:", data);
     if (error) {
       // Si el email ya está registrado, Supabase lo avisa
       return res.status(400).json({ error: error.message });
