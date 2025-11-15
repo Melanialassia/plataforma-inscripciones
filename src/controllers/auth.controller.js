@@ -3,6 +3,7 @@
 const supabase = require('../supabaseClient.js');
 
 const register = async (req, res) => {
+    console.log("🟦 REGISTER ENDPOINT CALLED", req.body);
   const { email, password, dni, rol } = req.body;
 
   try {
