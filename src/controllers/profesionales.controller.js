@@ -1,6 +1,6 @@
 const supabase = require("../supabaseClient.js");
 
-// 🟢 Crear profesor
+// Crear profesor
 const crearProfesional = async (req, res) => {
   const { dni, nombre, apellido } = req.body;
   try {
@@ -20,15 +20,12 @@ const crearProfesional = async (req, res) => {
   }
 };
 
-// 🟣 Obtener todos los profesores
+// Obtener todos los profesores
 const obtenerProfesionales = async (req, res) => {
   try {
-    const { data, error } = await supabase.from("profesores").select(`
-      id_profesor,
-      dni,
-      nombre,
-      apellido
-    `);
+    const { data, error } = await supabase
+      .from("profesores")
+      .select("id_profesor, dni, nombre, apellido");
 
     if (error) throw error;
 
@@ -38,7 +35,7 @@ const obtenerProfesionales = async (req, res) => {
   }
 };
 
-// 🟡 Actualizar profesor por ID
+// Actualizar profesor por ID
 const actualizarProfesional = async (req, res) => {
   const { id } = req.params;
   const { dni, nombre, apellido } = req.body;
@@ -60,7 +57,7 @@ const actualizarProfesional = async (req, res) => {
   }
 };
 
-// 🔴 Eliminar profesor por ID
+//Eliminar profesor por ID
 const eliminarProfesional = async (req, res) => {
   const { id } = req.params;
   const idNum = parseInt(id);
@@ -70,9 +67,6 @@ const eliminarProfesional = async (req, res) => {
   }
 
   try {
-    console.log("🟡 ID recibido para eliminar:", idNum);
-
-    // 1️⃣ Verificamos si el profesor existe
     const { data: check, error: checkError } = await supabase
       .from("profesores")
       .select("*")
@@ -82,10 +76,11 @@ const eliminarProfesional = async (req, res) => {
 
     if (checkError) throw checkError;
     if (!check || check.length === 0) {
-      return res.status(404).json({ error: "Profesor no encontrado en la base" });
+      return res
+        .status(404)
+        .json({ error: "Profesor no encontrado en la base" });
     }
 
-    // 2️⃣ Intentamos eliminar
     const { data, error } = await supabase
       .from("profesores")
       .delete()
@@ -96,11 +91,13 @@ const eliminarProfesional = async (req, res) => {
 
     if (error) throw error;
     if (!data || data.length === 0)
-      return res.status(404).json({ error: "Profesor no encontrado o no se eliminó" });
+      return res
+        .status(404)
+        .json({ error: "Profesor no encontrado o no se eliminó" });
 
     res.status(200).json({ message: "Profesor eliminado con éxito", data });
   } catch (error) {
-    console.error("❌ Error en eliminarProfesional:", error);
+    console.error("Error en eliminarProfesional:", error);
     res.status(500).json({ error: error.message });
   }
 };
