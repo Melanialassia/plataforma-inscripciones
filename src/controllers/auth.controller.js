@@ -3,7 +3,7 @@
 const supabase = require('../supabaseClient.js');
 
 const register = async (req, res) => {
-    console.log("🟦 REGISTER ENDPOINT CALLED", req.body);
+ 
   const { email, password, dni, rol } = req.body;
 
   try {
@@ -20,10 +20,8 @@ const register = async (req, res) => {
         data: { dni, rol }
       }
     });
- console.log("SIGNUP ERROR:", error);
-console.log("SIGNUP DATA:", data);
+
     if (error) {
-      // Si el email ya está registrado, Supabase lo avisa
       return res.status(400).json({ error: error.message });
     }
 
