@@ -1,17 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const materiasController = require("../controllers/materias.controller.js");
+const { authMiddleware} = require("../middlewares/auth.middleware");
 
-// Listar todas las materias
 router.get("/", materiasController.listarMaterias);
 
-// Crear una nueva materia
-router.post("/", materiasController.crearMateria);
+router.post("/", authMiddleware, materiasController.crearMateria);
 
-// Actualizar una materia por id
-router.put("/:id", materiasController.actualizarMateria);
+router.put("/:id", authMiddleware, materiasController.actualizarMateria);
 
-// Eliminar una materia por id
-router.delete("/:id", materiasController.eliminarMateria);
+router.delete("/:id", authMiddleware, materiasController.eliminarMateria);
+
 
 module.exports = router;
