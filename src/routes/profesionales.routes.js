@@ -9,6 +9,7 @@ const {
 
 router.post("/", crearProfesional);
 router.get("/", obtenerProfesionales);
-router.put("/:id", actualizarProfesional); // Actualizar por ID
-router.delete("/:id", eliminarProfesional); // Eliminar por ID
+router.put("/:id", actualizarProfesional); 
+router.delete("/:id", eliminarProfesional); 
+
 module.exports = router;
