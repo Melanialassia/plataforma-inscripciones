@@ -51,8 +51,9 @@ async function actualizarMateria(req, res) {
     const { id } = req.params;
 
     const { descripcion, id_profesor } = req.body;
+    const idNum = Number(id);
 
-    if (!id) {
+    if (!idNum) {
       res.status(400).json({
         success: false,
         message: "id de materia es requerido en params",
@@ -68,7 +69,7 @@ async function actualizarMateria(req, res) {
       return;
     }
 
-    const materiaActualizada = await materiaService.actualizar(id, {
+    const materiaActualizada = await materiaService.actualizar(idNum, {
       descripcion,
       id_profesor,
     });
@@ -92,13 +93,13 @@ async function actualizarMateria(req, res) {
   }
 }
 
-
 // Eliminar materia (por id)
 async function eliminarMateria(req, res) {
   try {
     const { id } = req.params;
+    const idNum = Number(id);
 
-    if (!id) {
+    if (!idNum) {
       res.status(400).json({
         success: false,
         message: "id de materia es requerido en params",
@@ -106,7 +107,7 @@ async function eliminarMateria(req, res) {
       return;
     }
 
-    const eliminado = await materiaService.eliminar(Number(id));
+    const eliminado = await materiaService.eliminar(idNum);
 
     if (!eliminado) {
       res.status(404).json({

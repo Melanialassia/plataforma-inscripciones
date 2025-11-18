@@ -2,6 +2,7 @@
 const supabase = require('../supabaseClient.js');
 
 const register = async (req, res) => {
+ 
   const { email, password, dni, rol } = req.body;
 
   try {
@@ -10,7 +11,7 @@ const register = async (req, res) => {
         error: "El rol debe ser exactamente 'admin'."
       });
     }
-    
+   
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -20,7 +21,7 @@ const register = async (req, res) => {
     });
 
     if (error) {
-    
+
       return res.status(400).json({ error: error.message });
     }
 
