@@ -1,5 +1,4 @@
 
-// src/controllers/auth.controller.js
 const supabase = require('../supabaseClient.js');
 
 const register = async (req, res) => {
@@ -21,7 +20,7 @@ const register = async (req, res) => {
     });
 
     if (error) {
-      // Si el email ya está registrado, Supabase lo avisa
+    
       return res.status(400).json({ error: error.message });
     }
 
