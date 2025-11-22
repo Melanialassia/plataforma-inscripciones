@@ -30,4 +30,21 @@ async function crearAlumno(req, res) {
   }
 }
 
-module.exports = { obtenerAlumnos, obtenerAlumnoPorDni, crearAlumno };
+async function actualizarAlumno(req, res) {
+  try {
+    const dni = Number(req.params.dni);
+    const nuevosDatos = req.body;
+
+    const alumnoActualizado = await alumnoService.actualizar(dni, nuevosDatos);
+
+    if (!alumnoActualizado) {
+      return res.status(404).json({ success: false, message: "Alumno no encontrado" });
+    }
+
+    res.json({ success: true, alumno: alumnoActualizado });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+module.exports = { obtenerAlumnos, obtenerAlumnoPorDni, crearAlumno, actualizarAlumno };

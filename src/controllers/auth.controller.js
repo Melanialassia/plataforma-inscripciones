@@ -11,6 +11,29 @@ const register = async (req, res) => {
         error: "El rol debe ser exactamente 'admin'."
       });
     }
+
+      const { data: emailExiste } = await supabase
+      .from('usuarios')
+      .select('email')
+      .eq('email', email)
+      .single();
+
+    if (emailExiste) {
+      return res.status(400).json({ error: "El email ya está registrado." });
+    }
+
+    
+    const { data: dniExiste } = await supabase
+      .from('usuarios')
+      .select('dni')
+      .eq('dni', dni)
+      .single();
+
+    if (dniExiste) {
+      return res.status(400).json({ error: "El DNI ya está registrado." });
+    }
+
+
    
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -23,6 +46,13 @@ const register = async (req, res) => {
     if (error) {
 
       return res.status(400).json({ error: error.message });
+    }
+    const { error: insertError } = await supabase
+      .from('usuarios')
+      .insert({ email, dni, rol });
+
+    if (insertError) {
+      return res.status(400).json({ error: insertError.message });
     }
 
     res.status(200).json({
