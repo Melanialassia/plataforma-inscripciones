@@ -16,8 +16,7 @@ app.use('/api/inscripciones', inscripcionRoutes)
 app.use('/api/profesionales', profesionalesRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/materias', materiasRoutes);
-app.use('/api/alumnos', alumnosRoutes);
-
+app.use('/api/alumno', alumnosRoutes);
 app.get('/', (req, res) => res.send('Servidor funcionando 🚀'));
 
 app.listen(PORT, () => console.log(`✅ Servidor en http://localhost:${PORT}`));

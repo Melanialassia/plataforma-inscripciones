@@ -1,47 +1,46 @@
-const supabase = require('../supabaseClient.js');
+const supabase = require("../supabaseClient.js");
 
 const registrarInscripcion = async (req, res) => {
   const { dni, id_materia, fecha_inscripcion, estado } = req.body;
 
   try {
-    const { data: existe, error: errorExistencia } = await supabase
-      .from('inscripciones')
-      .select('*')
-      .eq('dni', dni)
-      .eq('id_materia', id_materia)
-      .maybeSingle();
+    // Verificar si ya existe una inscripción con el mismo dni y materia
+    const { data: inscripcionExistente, error: errorExistencia } =
+      await supabase
+        .from("inscripciones")
+        .select("id_inscripcion")
+        .eq("dni", dni)
+        .eq("id_materia", id_materia)
+        .limit(1);
 
     if (errorExistencia) throw errorExistencia;
 
-    if (existe) {
+    if (inscripcionExistente && inscripcionExistente.length > 0) {
       return res.status(400).json({
-        message: 'El alumno ya está inscripto en esta materia.'
+        message: "El alumno ya está inscripto en esta materia.",
       });
     }
 
+    // Si no existe, registrar la inscripción
     const { data, error } = await supabase
-      .from('inscripciones')
-      .insert([
-        { dni, id_materia, fecha_inscripcion, estado }
-      ])
+      .from("inscripciones")
+      .insert([{ dni, id_materia, fecha_inscripcion, estado }])
       .select();
 
     if (error) throw error;
 
-    res.status(200).json({
-      message: 'Inscripción registrada correctamente',
-      data
+    return res.status(200).json({
+      message: "Inscripción registrada correctamente",
+      data,
     });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    return res.status(400).json({ error: err.message });
   }
 };
 
 const listarInscripciones = async (req, res) => {
   try {
-    const { data, error } = await supabase
-      .from('inscripciones')
-      .select(`
+    const { data, error } = await supabase.from("inscripciones").select(`
         id_inscripcion,
         fecha_inscripcion,
         estado,
@@ -66,18 +65,18 @@ const aprobarInscripcionController = async (req, res) => {
 
   if (!id_inscripcion || !estado) {
     return res.status(400).json({
-      error: 'Faltan datos: id_inscripcion o estado'
+      error: "Faltan datos: id_inscripcion o estado",
     });
   }
 
   try {
     const { error } = await supabase
-      .from('inscripciones')
+      .from("inscripciones")
       .update({ estado })
-      .eq('id_inscripcion', id_inscripcion);
+      .eq("id_inscripcion", id_inscripcion);
 
     if (error) throw error;
-    res.json({ message: 'Estado de inscripción actualizado con éxito' });
+    res.json({ message: "Estado de inscripción actualizado con éxito" });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -85,15 +84,15 @@ const aprobarInscripcionController = async (req, res) => {
 
 const eliminarInscripcion = async (req, res) => {
   const { id_inscripcion } = req.params;
-
+  const id = Number(id_inscripcion);
   try {
     const { error } = await supabase
-      .from('inscripciones')
+      .from("inscripciones")
       .delete()
-      .eq('id_inscripcion', id_inscripcion);
+      .eq("id_inscripcion", id);
 
     if (error) throw error;
-    res.json({ message: 'Inscripción eliminada correctamente' });
+    res.json({ message: "Inscripción eliminada correctamente" });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -107,7 +106,8 @@ const obtenerMateriasPorAlumno = async (req, res) => {
 
     const { data, error } = await supabase
       .from("inscripciones")
-      .select(`
+      .select(
+        `
         id_inscripcion,
         fecha_inscripcion,
         estado,
@@ -116,13 +116,16 @@ const obtenerMateriasPorAlumno = async (req, res) => {
           descripcion,
           id_profesor
         )
-      `)
+      `
+      )
       .eq("dni", dni);
 
     if (error) throw error;
 
     if (!data || data.length === 0)
-      return res.status(404).json({ message: "El alumno no tiene inscripciones" });
+      return res
+        .status(404)
+        .json({ message: "El alumno no tiene inscripciones" });
 
     res.json({
       message: "📘 Materias del alumno encontradas",
@@ -133,11 +136,10 @@ const obtenerMateriasPorAlumno = async (req, res) => {
   }
 };
 
-
 module.exports = {
   registrarInscripcion,
   listarInscripciones,
   aprobarInscripcionController,
   eliminarInscripcion,
-  obtenerMateriasPorAlumno 
+  obtenerMateriasPorAlumno,
 };

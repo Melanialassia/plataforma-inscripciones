@@ -1,32 +1,45 @@
-const alumnoService = require('../services/alumno.service.js');
+const alumnoService = require("../services/alumno.service.js");
+const supabase = require("../supabaseClient.js");
 
 async function obtenerAlumnos(req, res) {
   try {
     const alumnos = await alumnoService.obtenerTodos();
     res.json({ success: true, alumnos });
   } catch (error) {
+    console.error(error); // log para depuración
     res.status(500).json({ success: false, message: error.message });
   }
 }
+//puede sque borrar
+async function changeUserEmailAsAdmin(req, res) {
+  const { uid, email } = req.body;
 
-async function obtenerAlumnoPorDni(req, res) {
-  try {
-    const dni = Number(req.params.dni);
-    const alumno = await alumnoService.obtenerPorDni(dni);
-    if (!alumno) return res.status(404).json({ success: false, message: 'Alumno no encontrado' });
-    res.json({ success: true, alumno });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+  if (!uid || !email) {
+    return res.status(400).json({
+      error: "Falta user_id o new_email",
+    });
   }
-}
 
-async function crearAlumno(req, res) {
   try {
-    const nuevoAlumno = req.body;
-    const alumnoCreado = await alumnoService.crear(nuevoAlumno);
-    res.status(201).json({ success: true, alumno: alumnoCreado });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    const { data, error } = await supabase.auth.admin.updateUserById(uid, {
+      email: email,
+    });
+
+    if (error) {
+      return res.status(400).json({
+        error: error.message,
+      });
+    }
+
+    return res.status(200).json({
+      message: "Email actualizado correctamente",
+      user: data,
+    });
+  } catch (err) {
+    console.error("changeUserEmailAsAdmin error:", err);
+    return res.status(500).json({
+      error: err?.message || "Error interno",
+    });
   }
 }
 
@@ -47,4 +60,5 @@ async function actualizarAlumno(req, res) {
   }
 }
 
-module.exports = { obtenerAlumnos, obtenerAlumnoPorDni, crearAlumno, actualizarAlumno };
+module.exports = { obtenerAlumnos, actualizarAlumno };
+
