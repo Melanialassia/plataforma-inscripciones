@@ -16,8 +16,7 @@ async function login(req, res) {
     if (error || !usuario) {
         return res.status(404).json({ success: false, message: "Usuario no encontrado" });
     }
-
-    // Devuelve el usuario y su rol
+    
     res.json({ success: true, usuario });
 }
 

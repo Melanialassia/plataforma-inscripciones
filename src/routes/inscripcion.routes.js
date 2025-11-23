@@ -1,17 +1,18 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const {
   registrarInscripcion,
   listarInscripciones,
   aprobarInscripcionController,
   eliminarInscripcion,
-  obtenerMateriasPorAlumno
-} = require('../controllers/inscripcion.controller.js');
+  obtenerMateriasPorAlumno,
+} = require("../controllers/inscripcion.controller.js");
+const { authMiddleware } = require("../middlewares/auth.middleware");
 
-router.post('/', registrarInscripcion);
-router.get('/', listarInscripciones);
-router.post('/aprobar', aprobarInscripcionController);
-router.delete('/:id_inscripcion', eliminarInscripcion);
-router.get('/alumno/:dni', obtenerMateriasPorAlumno);
+router.post("/", authMiddleware, registrarInscripcion);
+router.get("/", listarInscripciones);
+router.post("/aprobar", authMiddleware, aprobarInscripcionController);
+router.delete("/:id_inscripcion", authMiddleware, eliminarInscripcion);
+router.get("/alumno/:dni", authMiddleware, obtenerMateriasPorAlumno);
 
 module.exports = router;

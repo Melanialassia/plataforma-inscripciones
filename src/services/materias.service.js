@@ -34,7 +34,6 @@ async function actualizar(id, payload) {
     .single();
 
   if (error) {
-    // Si no se encontró fila, retorna null
     if (error.code === "PGRST116") return null;
     throw new Error(error.message);
   }
@@ -57,9 +56,23 @@ async function eliminar(id) {
   return !!data;
 }
 
+async function obtenerInscriptosPorMateria(id_materia) {
+  const { data, error } = await supabase
+    .from("inscripciones")
+    .select("*")
+    .eq("id_materia", id_materia);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data || [];
+}
+
 module.exports = {
   obtenerTodos,
   crear,
   actualizar,
   eliminar,
+  obtenerInscriptosPorMateria
 };

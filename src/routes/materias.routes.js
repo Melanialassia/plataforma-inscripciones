@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const materiasController = require("../controllers/materias.controller.js");
-const { authMiddleware} = require("../middlewares/auth.middleware");
+const { authMiddleware } = require("../middlewares/auth.middleware");
 
 router.get("/", materiasController.listarMaterias);
 
@@ -13,3 +13,4 @@ router.delete("/:id", authMiddleware, materiasController.eliminarMateria);
 
 
 module.exports = router;
+

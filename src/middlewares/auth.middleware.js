@@ -13,13 +13,12 @@ async function authMiddleware(req, res, next) {
     return res.status(401).json({ message: 'Token inválido o expirado' });
   }
 
-  req.user = data.user.user_metadata; // guardamos el rol y dni
+  req.user = data.user.user_metadata;
   next();
 }
-
 function adminMiddleware(req, res, next) {
   if (!req.user) return res.status(401).json({ message: 'No autenticado' });
-  if (req.user.rol !== 'admin') return res.status(403).json({ message: 'Solo para administradores' });
+  if (req.user.rol !== 'administrador') return res.status(403).json({ message: 'Solo para administradores' });
   next();
 }
 
