@@ -93,41 +93,50 @@ async function actualizarMateria(req, res) {
   }
 }
 
-// Eliminar materia (por id)
 async function eliminarMateria(req, res) {
   try {
     const { id } = req.params;
     const idNum = Number(id);
 
     if (!idNum) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: "id de materia es requerido en params",
       });
-      return;
     }
 
+    // 🚫 1. VERIFICAR SI HAY INSCRIPTOS EN LA MATERIA
+    const inscriptos = await materiaService.obtenerInscriptosPorMateria(idNum);
+
+    if (inscriptos.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No se puede eliminar la materia porque tiene alumnos inscriptos",
+      });
+    }
+
+    // ✔ 2. SI NO TIENE INSCRIPTOS, SE PUEDE ELIMINAR
     const eliminado = await materiaService.eliminar(idNum);
 
     if (!eliminado) {
-      res.status(404).json({
+      return res.status(404).json({
         success: false,
         message: "Materia no encontrada o no eliminada",
       });
-      return;
     }
-    res.json({
+
+    return res.json({
       success: true,
       message: "Materia eliminada",
     });
+
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: error.message,
     });
   }
 }
-
 module.exports = {
   listarMaterias,
   crearMateria,

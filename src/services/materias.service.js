@@ -57,9 +57,23 @@ async function eliminar(id) {
   return !!data;
 }
 
+async function obtenerInscriptosPorMateria(id_materia) {
+  const { data, error } = await supabase
+    .from("inscripciones")
+    .select("*")
+    .eq("id_materia", id_materia);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data || [];
+}
+
 module.exports = {
   obtenerTodos,
   crear,
   actualizar,
   eliminar,
+  obtenerInscriptosPorMateria
 };
