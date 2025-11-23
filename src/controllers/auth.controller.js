@@ -5,62 +5,49 @@ const register = async (req, res) => {
   const { email, password, dni, rol } = req.body;
 
   if (!email || !password || !dni || !rol) {
-    return res.status(400).json({
-      error: "Faltan campos obligatorios",
-    });
+    return res.status(400).json({ error: "Faltan campos obligatorios" });
   }
 
-  if (!["alumno", "admin"].includes(rol)) {
-    return res.status(400).json({
-      error: "Rol inválido",
-    });
+  if (!["alumno", "administrador"].includes(rol)) {
+    return res.status(400).json({ error: "Rol inválido" });
   }
 
   try {
-    // if (rol !== "admin") {
-    //   return res.status(400).json({
-    //     error: "El rol debe ser exactamente 'admin'."
-    //   });
-    // }
-
-      const { data: emailExiste } = await supabase
-      .from('usuarios')
-      .select('email')
-      .eq('email', email)
+    const { data: emailExiste } = await supabase
+      .from("usuarios")
+      .select("email")
+      .eq("email", email)
       .single();
 
     if (emailExiste) {
       return res.status(400).json({ error: "El email ya está registrado." });
     }
 
-    
     const { data: dniExiste } = await supabase
-      .from('usuarios')
-      .select('dni')
-      .eq('dni', dni)
+      .from("usuarios")
+      .select("dni")
+      .eq("dni", dni)
       .single();
 
     if (dniExiste) {
       return res.status(400).json({ error: "El DNI ya está registrado." });
     }
 
-
-   
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: { dni, rol },
-      },
     });
 
     if (error) {
-
       return res.status(400).json({ error: error.message });
     }
-    const { error: insertError } = await supabase
-      .from('usuarios')
-      .insert({ email, dni, rol });
+
+    const { error: insertError } = await supabase.from("usuarios").insert({
+      uid: data.user.id,
+      email,
+      dni,
+      rol,
+    });
 
     if (insertError) {
       return res.status(400).json({ error: insertError.message });

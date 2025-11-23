@@ -4,7 +4,6 @@ const registrarInscripcion = async (req, res) => {
   const { dni, id_materia, fecha_inscripcion, estado } = req.body;
 
   try {
-    // Verificar si ya existe una inscripción con el mismo dni y materia
     const { data: inscripcionExistente, error: errorExistencia } =
       await supabase
         .from("inscripciones")
@@ -21,7 +20,6 @@ const registrarInscripcion = async (req, res) => {
       });
     }
 
-    // Si no existe, registrar la inscripción
     const { data, error } = await supabase
       .from("inscripciones")
       .insert([{ dni, id_materia, fecha_inscripcion, estado }])
