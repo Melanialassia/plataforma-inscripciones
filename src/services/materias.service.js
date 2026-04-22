@@ -1,78 +1,33 @@
-// src/services/materias.service.js
-const supabase = require("../supabaseClient");
+const db = require("../supabaseClient");
 
-// Obtener todas las materias
-async function obtenerTodos() {
-  const { data, error } = await supabase
-    .from("materias")
-    .select("id, descripcion, id_profesor");
-
-  if (error) throw new Error(error.message);
-  return data;
+function obtenerTodos() {
+  return db.prepare("SELECT * FROM cursos").all();
 }
 
-
-async function crear(payload) {
+function crear(payload) {
   const { descripcion, id_profesor } = payload;
-  const { data, error } = await supabase
-    .from("materias")
-    .insert([{ descripcion, id_profesor }])
-    .select()
-    .single();
-
-  if (error) throw new Error(error.message);
-  return data;
+  const result = db.prepare(
+    "INSERT INTO cursos (nombre, descripcion, profesor_id) VALUES (?, ?, ?)"
+  ).run(descripcion, descripcion, id_profesor);
+  return { id: result.lastInsertRowid, descripcion, id_profesor };
 }
 
-// Actualizar materia por id
-async function actualizar(id, payload) {
-  const { data, error } = await supabase
-    .from("materias")
-    .update(payload)
-    .eq("id", id)
-    .select()
-    .single();
-
-  if (error) {
-    if (error.code === "PGRST116") return null;
-    throw new Error(error.message);
-  }
-  return data;
+function actualizar(id, payload) {
+  const { descripcion, id_profesor } = payload;
+  const result = db.prepare(
+    "UPDATE cursos SET nombre = ?, profesor_id = ? WHERE id = ?"
+  ).run(descripcion, id_profesor, id);
+  if (result.changes === 0) return null;
+  return db.prepare("SELECT * FROM cursos WHERE id = ?").get(id);
 }
 
-// Eliminar materia por id
-async function eliminar(id) {
-  const { data, error } = await supabase
-    .from("materias")
-    .delete()
-    .eq("id", id)
-    .select()
-    .single();
-
-  if (error) {
-    if (error.code === "PGRST116") return null;
-    throw new Error(error.message);
-  }
-  return !!data;
+function eliminar(id) {
+  const result = db.prepare("DELETE FROM cursos WHERE id = ?").run(id);
+  return result.changes > 0;
 }
 
-async function obtenerInscriptosPorMateria(id_materia) {
-  const { data, error } = await supabase
-    .from("inscripciones")
-    .select("*")
-    .eq("id_materia", id_materia);
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  return data || [];
+function obtenerInscriptosPorMateria(id_materia) {
+  return db.prepare("SELECT * FROM inscripciones WHERE curso_id = ?").all(id_materia);
 }
 
-module.exports = {
-  obtenerTodos,
-  crear,
-  actualizar,
-  eliminar,
-  obtenerInscriptosPorMateria
-};
+module.exports = { obtenerTodos, crear, actualizar, eliminar, obtenerInscriptosPorMateria };

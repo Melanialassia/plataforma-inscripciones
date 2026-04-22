@@ -1,143 +1,53 @@
-const supabase = require("../supabaseClient.js");
+const { crearInscripcion, aprobarInscripcion } = require('../services/inscripcion.service.js');
+const db = require('../supabaseClient.js');
 
-const registrarInscripcion = async (req, res) => {
-  const { dni, id_materia, fecha_inscripcion, estado } = req.body;
-
-  try {
-    const { data: inscripcionExistente, error: errorExistencia } =
-      await supabase
-        .from("inscripciones")
-        .select("id_inscripcion")
-        .eq("dni", dni)
-        .eq("id_materia", id_materia)
-        .limit(1);
-
-    if (errorExistencia) throw errorExistencia;
-
-    if (inscripcionExistente && inscripcionExistente.length > 0) {
-      return res.status(400).json({
-        message: "El alumno ya está inscripto en esta materia.",
-      });
-    }
-
-    const { data, error } = await supabase
-      .from("inscripciones")
-      .insert([{ dni, id_materia, fecha_inscripcion, estado }])
-      .select();
-
-    if (error) throw error;
-
-    return res.status(200).json({
-      message: "Inscripción registrada correctamente",
-      data,
-    });
-  } catch (err) {
-    return res.status(400).json({ error: err.message });
-  }
+const registrarInscripcion = (req, res) => {
+  const { dni, id_materia } = req.body;
+  const result = crearInscripcion(dni, id_materia);
+  if (!result.success) return res.status(400).json(result);
+  return res.status(200).json(result);
 };
 
-const listarInscripciones = async (req, res) => {
+const listarInscripciones = (req, res) => {
   try {
-    const { data, error } = await supabase.from("inscripciones").select(`
-        id_inscripcion,
-        fecha_inscripcion,
-        estado,
-        dni,
-        materias (
-          id,
-          descripcion,
-          id_profesor
-        )
-      `);
-
-    if (error) throw error;
-
-    res.json({ success: true, inscripciones: data });
+    const inscripciones = db.prepare(`
+      SELECT i.*, u.email, u.dni, c.nombre as materia
+      FROM inscripciones i
+      JOIN usuarios u ON i.alumno_id = u.id
+      JOIN cursos c ON i.curso_id = c.id
+    `).all();
+    res.json({ success: true, inscripciones });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-const aprobarInscripcionController = async (req, res) => {
+const aprobarInscripcionController = (req, res) => {
   const { id_inscripcion, estado } = req.body;
-
-  if (!id_inscripcion || !estado) {
-    return res.status(400).json({
-      error: "Faltan datos: id_inscripcion o estado",
-    });
-  }
-
-  try {
-    const { error } = await supabase
-      .from("inscripciones")
-      .update({ estado })
-      .eq("id_inscripcion", id_inscripcion);
-
-    if (error) throw error;
-    res.json({ message: "Estado de inscripción actualizado con éxito" });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
+  if (!id_inscripcion || !estado) return res.status(400).json({ error: "Faltan datos" });
+  const result = aprobarInscripcion(id_inscripcion, estado);
+  if (!result.success) return res.status(404).json(result);
+  res.json(result);
 };
 
-const eliminarInscripcion = async (req, res) => {
-  const { id_inscripcion } = req.params;
-  const id = Number(id_inscripcion);
-  try {
-    const { error } = await supabase
-      .from("inscripciones")
-      .delete()
-      .eq("id_inscripcion", id);
-
-    if (error) throw error;
-    res.json({ message: "Inscripción eliminada correctamente" });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
+const eliminarInscripcion = (req, res) => {
+  const id = Number(req.params.id_inscripcion);
+  const result = db.prepare("DELETE FROM inscripciones WHERE id = ?").run(id);
+  if (result.changes === 0) return res.status(404).json({ error: "Inscripción no encontrada" });
+  res.json({ message: "Inscripción eliminada correctamente" });
 };
 
-const obtenerMateriasPorAlumno = async (req, res) => {
+const obtenerMateriasPorAlumno = (req, res) => {
   const { dni } = req.params;
-
-  try {
-    if (!dni) return res.status(400).json({ error: "Falta el parámetro DNI" });
-
-    const { data, error } = await supabase
-      .from("inscripciones")
-      .select(
-        `
-        id_inscripcion,
-        fecha_inscripcion,
-        estado,
-        materias (
-          id,
-          descripcion,
-          id_profesor
-        )
-      `
-      )
-      .eq("dni", dni);
-
-    if (error) throw error;
-
-    if (!data || data.length === 0)
-      return res
-        .status(404)
-        .json({ message: "El alumno no tiene inscripciones" });
-
-    res.json({
-      message: "📘 Materias del alumno encontradas",
-      inscripciones: data,
-    });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
+  const alumno = db.prepare("SELECT * FROM usuarios WHERE dni = ?").get(dni);
+  if (!alumno) return res.status(404).json({ error: "Alumno no encontrado" });
+  const inscripciones = db.prepare(`
+    SELECT i.*, c.nombre as materia
+    FROM inscripciones i
+    JOIN cursos c ON i.curso_id = c.id
+    WHERE i.alumno_id = ?
+  `).all(alumno.id);
+  res.json({ success: true, inscripciones });
 };
 
-module.exports = {
-  registrarInscripcion,
-  listarInscripciones,
-  aprobarInscripcionController,
-  eliminarInscripcion,
-  obtenerMateriasPorAlumno,
-};
+module.exports = { registrarInscripcion, listarInscripciones, aprobarInscripcionController, eliminarInscripcion, obtenerMateriasPorAlumno };
